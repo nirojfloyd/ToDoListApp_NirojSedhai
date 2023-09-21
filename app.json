@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "ToDoListApp_NirojSedhai",
+    "slug": "ToDoListApp_NirojSedhai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.niroj.ToDoListApp_NirojSedhai",
+      "versionCode": 1
+      
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
