@@ -7,18 +7,24 @@ import {
   View, Text, TextInput, Button, StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { logIn } from '../../context/Auth';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null); // State to store login error
   const navigation = useNavigation(); // Use the useNavigation hook
 
-  const handleLogin = () => {
-    // Implement Firebase authentication logic here
-    // If login is successful, navigate to the todo list screen
-    // If login fails, handle errors
+  const handleLogin = async () => {
+    try {
+      await logIn(email, password);
 
-    navigation.navigate('TodoList');
+      // Navigate to the main app screen
+      navigation.navigate('TodoList');
+    } catch (error) {
+      // Handle login error
+      setError('Login failed. Please check your email and password.');
+    }
   };
 
   const navigateToSignup = () => {
@@ -27,7 +33,7 @@ function Login() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Login Page</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -43,6 +49,8 @@ function Login() {
       />
       <Button title="Login" onPress={handleLogin} />
       <Button title="Sign Up" onPress={navigateToSignup} />
+
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };
@@ -66,6 +74,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
   },
 });
 

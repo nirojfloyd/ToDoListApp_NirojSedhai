@@ -3,21 +3,27 @@
 
 // Signup.js
 import React, { useState } from 'react';
-import {
-  View, Text, TextInput, Button, StyleSheet,
-} from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import the useNavigation hook
+import { signUp } from '../../context/Auth';
 
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [successMessage, setSuccessMessage] = useState(null); // State for success message
   const navigation = useNavigation(); // Use the useNavigation hook
 
-  const handleSignup = () => {
-    // Implement Firebase signup logic here
-    // If signup is successful, you can navigate to the todo
-    // list screen or any other screen as needed
-    // If signup fails, handle errors
+  const handleSignup = async () => {
+    try {
+      await signUp(email, password);
+      // Clear the input fields
+      setEmail('');
+      setPassword('');
+      // Display success message
+      setSuccessMessage('You have successfully created the account. Proceed to login now');
+    } catch (error) {
+      // Handle signup error
+    }
   };
 
   const navigateToLogin = () => {
@@ -42,6 +48,7 @@ function Signup() {
       />
       <Button title="Sign Up" onPress={handleSignup} />
       <Button title="Back to Login" onPress={navigateToLogin} />
+      {successMessage && <Text style={styles.successMessage}>{successMessage}</Text>}
     </View>
   );
 }
@@ -65,6 +72,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+  },
+  successMessage: {
+    color: 'green',
+    marginTop: 10,
   },
 });
 
