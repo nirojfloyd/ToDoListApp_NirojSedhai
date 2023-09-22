@@ -1,31 +1,45 @@
-// // AppContext.js (Create a context for managing user state)
-// import React, { createContext, useContext, useState, useEffect } from 'react';
-// import { logOutUser } from './path-to-auth.js'; // Import your authentication functions
+/* eslint-disable react/jsx-filename-extension */
+// AppContext.js (Create a context for managing user state)
+import React, {
+  createContext, useContext, useState, useEffect, useMemo,
+} from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import auth from '../../firebase-config';
+import { logOutUser } from './Auth';
 
-// const AppContext = createContext();
+const AppContext = createContext();
 
-// export const AppProvider = ({ children }) => {
-//   const [user, setUser] = useState(null);
+export function AppProvider({ children }) {
+  const [user, setUser] = useState(null);
 
-//   // You can add logic to check the user's authentication state here
-//   useEffect(() => {
-//     // For example, you can check if the user is already logged in
-//     // and update the user state accordingly.
-//     // setUser(loggedInUser);
-//   }, []);
+  useEffect(() => {
+    // Use Firebase's onAuthStateChanged to listen for changes in the user's authentication state
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        setUser(user); // Set the user state to the authenticated user
+      } else {
+        // No user is signed in
+        setUser(null); // Set the user state to null
+      }
+    });
+    // Clean up the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []);
 
-//   const logOut = async () => {
-//     await logOutUser();
-//     setUser(null);
-//   };
+  const logOut = async () => {
+    await logOutUser();
+    setUser(null);
+  };
 
-//   return (
-//     <AppContext.Provider value={{ user, logOut }}>
-//       {children}
-//     </AppContext.Provider>
-//   );
-// };
+  // Wrap the context value in useMemo to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({ user, logOut }), [user]);
 
-// export const useAppContext = () => {
-//   return useContext(AppContext);
-// };
+  return (
+    <AppContext.Provider value={contextValue}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+export const useAppContext = () => useContext(AppContext);

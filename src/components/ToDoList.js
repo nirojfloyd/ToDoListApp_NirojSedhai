@@ -8,32 +8,36 @@ import {
   View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
+import { useNavigation } from '@react-navigation/native';
 import {
   addTask, updateTask, getTasksByUser, deleteTask,
 } from './taskService';
-import auth from '../../firebase-config';
+import { useAppContext } from '../context/AppContext';
 
 function TodoList() {
   const [tasks, setTasks] = useState([]);
   const [taskText, setTaskText] = useState('');
   const [editingTaskId, setEditingTaskId] = useState(null);
-  const [user, setUser] = useState(null);
+  const { user, logOut } = useAppContext();
+  const navigation = useNavigation();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        // User is signed in
-        setUser(authUser);
-        loadTasks(authUser.uid);
-      } else {
-        // No user is signed in
-        setUser(null);
-        setTasks([]);
-      }
-    });
+    // Load tasks associated with the user when the component mounts
+    if (user) {
+      loadTasks(user.uid);
+    }
+  }, [user]);
 
-    return unsubscribe;
-  }, []);
+  const handleLogOut = async () => {
+    try {
+      await logOut(); // Log the user out
+
+      // Navigate to the "Login" screen
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   const loadTasks = async (userId) => {
     try {
@@ -108,7 +112,6 @@ function TodoList() {
     }
   };
 
-
   const renderTaskItem = ({ item }) => {
     const isEditing = editingTaskId === item.id;
 
@@ -164,6 +167,7 @@ function TodoList() {
         renderItem={renderTaskItem}
         keyExtractor={(item) => item.id.toString()}
       />
+      <Button title="Log Out" onPress={handleLogOut} />
     </View>
   );
 }
