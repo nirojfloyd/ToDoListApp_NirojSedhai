@@ -1,46 +1,113 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/jsx-filename-extension */
 
 // TodoList.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
+import {
+  addTask, updateTask, getTasksByUser, deleteTask,
+} from './taskService';
+import auth from '../../firebase-config';
 
 function TodoList() {
   const [tasks, setTasks] = useState([]);
   const [taskText, setTaskText] = useState('');
   const [editingTaskId, setEditingTaskId] = useState(null);
+  const [user, setUser] = useState(null);
 
-  // Function to add a new task to the list
-  const addTask = () => {
-    if (taskText.trim() !== '') {
-      setTasks([...tasks, { id: Date.now(), title: taskText, completed: false }]);
-      setTaskText('');
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        // User is signed in
+        setUser(authUser);
+        loadTasks(authUser.uid);
+      } else {
+        // No user is signed in
+        setUser(null);
+        setTasks([]);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const loadTasks = async (userId) => {
+    try {
+      // Load tasks associated with the user
+      const userTasks = await getTasksByUser(userId);
+      setTasks(userTasks);
+    } catch (error) {
+      console.error('Error loading tasks:', error);
     }
   };
 
-  // Function to toggle the completion status of a task
-  const toggleTaskStatus = (taskId) => {
-    setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId
-      ? { ...task, completed: !task.completed } : task)));
+  const addTaskToFirestore = async (title) => {
+    try {
+      // Add the task to Firestore with the user's ID
+      const taskId = await addTask(title, user.uid);
+
+      // Create a new task object and add it to the local state
+      const newTask = { id: taskId, title, completed: false };
+      setTasks([...tasks, newTask]);
+    } catch (error) {
+      console.error('Error adding task:', error);
+    }
   };
 
-  // Function to delete a task
-  const deleteTask = (taskId) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+  const toggleTaskStatus = async (taskId) => {
+    try {
+      // Toggle the completion status of the task in Firestore
+      await updateTask(taskId, { completed: !tasks.find((task) => task.id === taskId).completed });
+
+      // Update the local state to reflect the new task status
+      setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId
+        ? { ...task, completed: !task.completed }
+        : task)));
+    } catch (error) {
+      console.error('Error toggling task status:', error);
+    }
   };
 
+  // Function to delete a task in Firestore
+  const deleteTaskInFirestore = async (taskId) => {
+    try {
+      // Delete the task from Firestore
+      await deleteTask(taskId);
+
+      // Remove the task from the local state
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
+
+  // Function to start editing a task
   const startEditingTask = (taskId) => {
     setEditingTaskId(taskId);
   };
 
-  const saveEditedTask = (taskId, newText) => {
-    setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId
-      ? { ...task, title: newText } : task)));
-    setEditingTaskId(null);
+  // Function to save the edited task in Firestore
+  const saveEditedTaskInFirestore = async (taskId, newText) => {
+    try {
+      // Save the edited task in Firestore
+      await updateTask(taskId, { title: newText });
+
+      // Update the local state with the edited task
+      setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId
+        ? { ...task, title: newText }
+        : task)));
+
+      // Clear the editing task ID
+      setEditingTaskId(null);
+    } catch (error) {
+      console.error('Error saving edited task:', error);
+    }
   };
+
 
   const renderTaskItem = ({ item }) => {
     const isEditing = editingTaskId === item.id;
@@ -59,7 +126,7 @@ function TodoList() {
           <TextInput
             style={[styles.taskTitle, item.completed && styles.completedText]}
             value={item.title}
-            onChangeText={(text) => saveEditedTask(item.id, text)}
+            onChangeText={(text) => saveEditedTaskInFirestore(item.id, text)}
             autoFocus
             onBlur={() => setEditingTaskId(null)}
           />
@@ -72,7 +139,7 @@ function TodoList() {
           </Text>
         )}
 
-        <TouchableOpacity onPress={() => deleteTask(item.id)}>
+        <TouchableOpacity onPress={() => deleteTaskInFirestore(item.id)}>
           <Ionicons name="trash-outline" size={24} color="red" />
         </TouchableOpacity>
       </View>
@@ -89,7 +156,7 @@ function TodoList() {
           value={taskText}
           onChangeText={(text) => setTaskText(text)}
         />
-        <Button title="Add Task" onPress={addTask} />
+        <Button title="Add Task" onPress={() => addTaskToFirestore(taskText)} />
       </View>
 
       <FlatList

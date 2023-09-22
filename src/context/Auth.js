@@ -2,11 +2,9 @@
 // auth.js
 
 import {
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
 } from 'firebase/auth';
-import { app } from '../../firebase-config';
-
-const auth = getAuth(app);
+import auth from '../../firebase-config';
 
 export const signUp = async (email, password) => {
   try {
