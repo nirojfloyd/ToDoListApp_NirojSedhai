@@ -27,7 +27,7 @@ Check out the live of the app here: [Live Demo](https:)
 - **User-Friendly Interface**: The app offers an intuitive and visually appealing user interface.
 
 
-- ## Technology Stack
+## Technology Stack
 
 - Frontend:
   - React Native
