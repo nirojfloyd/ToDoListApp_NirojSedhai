@@ -26,6 +26,7 @@ Check out the live of the app here: [Live Demo](https:)
 - **Cross-Platform**: The app has been tested on both Android and iOS devices.
 - **User-Friendly Interface**: The app offers an intuitive and visually appealing user interface.
 
+
 - ## Technology Stack
 
 - Frontend:
@@ -52,7 +53,7 @@ Before running the app, ensure you have the following dependencies installed:
 1. **Clone the repository:**
 
    ```shell
-   git clone [(https://github.com/nirojfloyd/ToDoListApp_NirojSedhai.git)](https://github.com/nirojfloyd/ToDoListApp_NirojSedhai.git)
+   git clone https://github.com/nirojfloyd/ToDoListApp_NirojSedhai.git
    ```
 
 2. **Install dependencies for the project:**
