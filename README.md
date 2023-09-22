@@ -21,12 +21,11 @@ Check out the live of the app here: [Live Demo](https:)
 - **Task Completion**: Tasks can be marked as complete or incomplete.
 - **List Filtering**: Users can filter tasks by status (all, active, completed).
 - **List Sorting**: Tasks can be sorted alphabetically.
-- **Synchronization**: Tasks are synchronized with a remote server for multi-device access.
 - **User Authentication**: Firebase Authentication handles user registration and login.
 - **Data Storage**: Task data is stored securely in Firebase.
 - **Cross-Platform**: The app has been tested on both Android and iOS devices.
 - **User-Friendly Interface**: The app offers an intuitive and visually appealing user interface.
--
+
 - ## Technology Stack
 
 - Frontend:
