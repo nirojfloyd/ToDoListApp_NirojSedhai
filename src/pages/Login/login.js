@@ -4,10 +4,11 @@
 // Login.js
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, Button, StyleSheet,
+  View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { logIn } from '../../context/Auth';
+import logo from '../../../assets/login_image.jpg';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -33,6 +34,7 @@ function Login() {
 
   return (
     <View style={styles.container}>
+      <Image source={logo} style={styles.logo} />
       <Text style={styles.title}>Login Page</Text>
       <TextInput
         style={styles.input}
@@ -47,13 +49,21 @@ function Login() {
         value={password}
         onChangeText={(text) => setPassword(text)}
       />
-      <Button title="Login" onPress={handleLogin} />
-      <Button title="Sign Up" onPress={navigateToSignup} />
+      <TouchableOpacity onPress={handleLogin} style={styles.button}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <Text style={styles.signupText}>
+        Donot have an account?
+        {' '}
+        <Text style={styles.signupLink} onPress={navigateToSignup}>
+          Signup here
+        </Text>
+      </Text>
 
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -61,6 +71,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#fff',
+    border: '1px solid #ccc',
+    borderRadius: 10,
   },
   title: {
     fontSize: 24,
@@ -78,6 +91,29 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginTop: 10,
+  },
+  signupText: {
+    marginTop: 20,
+    fontSize: 16,
+  },
+  signupLink: {
+    color: 'blue', // Make the "Signup here" text blue
+    textDecorationLine: 'underline',
+  },
+  button: {
+    backgroundColor: '#007acc',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  logo: {
+    width: 80, // Adjust the width and height as needed
+    height: 80,
+    marginBottom: 20,
   },
 });
 

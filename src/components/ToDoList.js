@@ -5,13 +5,18 @@
 // TodoList.js
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity,
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
 import { useNavigation } from '@react-navigation/native';
-import {
-  addTask, updateTask, getTasksByUser, deleteTask,
-} from './taskService';
+import { addTask, updateTask, getTasksByUser, deleteTask } from './taskService';
 import { useAppContext } from '../context/AppContext';
 
 function TodoList() {
@@ -20,6 +25,9 @@ function TodoList() {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const { user, logOut } = useAppContext();
   const navigation = useNavigation();
+  const [filter, setFilter] = useState('all'); // Track filter option (all, active, completed)
+  const [sort, setSort] = useState('default'); // Track sort option (default, alphabetical)
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
     // Load tasks associated with the user when the component mounts
@@ -27,6 +35,11 @@ function TodoList() {
       loadTasks(user.uid);
     }
   }, [user]);
+
+  useEffect(() => {
+    // Apply filter and sort when tasks or filter/sort options change
+    filterAndSortTasks();
+  }, [tasks, filter, sort]);
 
   const handleLogOut = async () => {
     try {
@@ -68,9 +81,11 @@ function TodoList() {
       await updateTask(taskId, { completed: !tasks.find((task) => task.id === taskId).completed });
 
       // Update the local state to reflect the new task status
-      setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId
-        ? { ...task, completed: !task.completed }
-        : task)));
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, completed: !task.completed } : task
+        )
+      );
     } catch (error) {
       console.error('Error toggling task status:', error);
     }
@@ -101,15 +116,38 @@ function TodoList() {
       await updateTask(taskId, { title: newText });
 
       // Update the local state with the edited task
-      setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId
-        ? { ...task, title: newText }
-        : task)));
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === taskId ? { ...task, title: newText } : task))
+      );
 
       // Clear the editing task ID
       setEditingTaskId(null);
     } catch (error) {
       console.error('Error saving edited task:', error);
     }
+  };
+
+  const filterAndSortTasks = () => {
+    console.log('Filter:', filter); // Debugging: Log the current filter
+    console.log('Sort:', sort); // Debugging: Log the current sort
+
+    let filteredTasks = [...tasks];
+
+    // Apply filter
+    if (filter === 'active') {
+      filteredTasks = filteredTasks.filter((task) => !task.completed);
+    } else if (filter === 'completed') {
+      filteredTasks = filteredTasks.filter((task) => task.completed);
+    }
+
+    // Apply sort
+    if (sort === 'alphabetical') {
+      filteredTasks.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    console.log('Filtered Tasks:', filteredTasks); // Debugging: Log the filtered tasks
+
+    setFilteredTasks(filteredTasks);
   };
 
   const renderTaskItem = ({ item }) => {
@@ -149,8 +187,26 @@ function TodoList() {
     );
   };
 
+  const renderFilterButton = (text, filterOption) => (
+    <TouchableOpacity
+      style={[styles.filterButton, filter === filterOption && styles.activeFilterButton]}
+      onPress={() => setFilter(filterOption)}
+    >
+      <Text style={styles.filterButtonText}>{text}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderSortButton = (text, sortOption) => (
+    <TouchableOpacity
+      style={[styles.sortButton, sort === sortOption && styles.activeSortButton]}
+      onPress={() => setSort(sortOption)}
+    >
+      <Text style={styles.sortButtonText}>{text}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Todo List</Text>
       <View style={styles.inputContainer}>
         <TextInput
@@ -159,23 +215,53 @@ function TodoList() {
           value={taskText}
           onChangeText={(text) => setTaskText(text)}
         />
-        <Button title="Add Task" onPress={() => addTaskToFirestore(taskText)} />
+        <TouchableOpacity style={styles.addButton} onPress={() => addTaskToFirestore(taskText)}>
+          <Text style={styles.addButtonLabel}>Add Task</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Filter and sort controls */}
+      <View style={styles.filterContainer}>
+        <Text style={styles.filterText}>Filter:</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterButtons}
+        >
+          {renderFilterButton('All', 'all')}
+          {renderFilterButton('Active', 'active')}
+          {renderFilterButton('Completed', 'completed')}
+        </ScrollView>
+      </View>
+      <View style={styles.sortContainer}>
+        <Text style={styles.filterText}>Sort:</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.sortButtons}
+        >
+          {renderSortButton('Default', 'default')}
+          {renderSortButton('Alphabetical', 'alphabetical')}
+        </ScrollView>
       </View>
 
       <FlatList
-        data={tasks}
+        data={filteredTasks}
         renderItem={renderTaskItem}
         keyExtractor={(item) => item.id.toString()}
+        style={styles.taskList}
+        initialScrollIndex={0}
       />
       <Button title="Log Out" onPress={handleLogOut} />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
+    backgroundColor: '#f0f0f0',
   },
   title: {
     fontSize: 24,
@@ -185,6 +271,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 20,
   },
   input: {
     flex: 1,
@@ -194,6 +281,66 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginRight: 10,
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  filterText: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  filterButtons: {
+    flexDirection: 'row',
+  },
+  filterButton: {
+    padding: 10,
+    marginRight: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  activeFilterButton: {
+    backgroundColor: 'lightgrey', // Change the background color for the active filter
+  },
+  filterButtonText: {
+    fontSize: 16,
+  },
+  sortContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  sortButtons: {
+    flexDirection: 'row',
+  },
+  sortButton: {
+    padding: 10,
+    marginRight: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  activeSortButton: {
+    backgroundColor: 'lightgrey', // Change the background color for the active sort
+  },
+  sortButtonText: {
+    fontSize: 16,
+  },
+  addButton: {
+    backgroundColor: 'skyblue',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  addButtonLabel: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  taskList: {
+    flex: 1,
   },
   taskItem: {
     flexDirection: 'row',
@@ -209,6 +356,18 @@ const styles = StyleSheet.create({
   },
   completedText: {
     textDecorationLine: 'line-through',
+  },
+  logOutButton: {
+    backgroundColor: 'red',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  logOutButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

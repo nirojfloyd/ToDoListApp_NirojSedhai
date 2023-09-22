@@ -3,9 +3,10 @@
 
 // Signup.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import the useNavigation hook
 import { signUp } from '../../context/Auth';
+import logo from '../../../assets/login_image.jpg';
 
 function Signup() {
   const [email, setEmail] = useState('');
@@ -32,6 +33,7 @@ function Signup() {
 
   return (
     <View style={styles.container}>
+      <Image source={logo} style={styles.logo} />
       <Text style={styles.title}>Sign Up</Text>
       <TextInput
         style={styles.input}
@@ -46,8 +48,16 @@ function Signup() {
         value={password}
         onChangeText={(text) => setPassword(text)}
       />
-      <Button title="Sign Up" onPress={handleSignup} />
-      <Button title="Back to Login" onPress={navigateToLogin} />
+      <TouchableOpacity onPress={handleSignup} style={styles.button}>
+        <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
+      <Text style={styles.loginText}>
+        Already have an account?
+        {' '}
+        <Text style={styles.loginLink} onPress={navigateToLogin}>
+          Login here
+        </Text>
+      </Text>
       {successMessage && <Text style={styles.successMessage}>{successMessage}</Text>}
     </View>
   );
@@ -59,6 +69,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#fff',
+    border: '1px solid #ccc', // Add border style here
+    borderRadius: 10, // Add border radius for rounded corners
+  },
+  logo: {
+    width: 80, // Adjust the width and height as needed
+    height: 80,
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
@@ -76,6 +94,24 @@ const styles = StyleSheet.create({
   successMessage: {
     color: 'green',
     marginTop: 10,
+  },
+  loginText: {
+    marginTop: 20,
+    fontSize: 16,
+  },
+  loginLink: {
+    color: 'blue', // Make the "Login here" text blue
+    textDecorationLine: 'underline',
+  },
+  button: {
+    backgroundColor: '#007acc',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
