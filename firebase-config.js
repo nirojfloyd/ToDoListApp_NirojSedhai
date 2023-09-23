@@ -1,9 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import { getAuth, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBB3eyW4_T77-ie4A_hoxMoU0BOzzf9T18',
@@ -21,9 +21,17 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 // export const storage = getStorage(app);
 
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-});
+// Initialize Firebase Authentication
+const auth = getAuth(app);
+
+// Manually set persistence to LOCAL for React Native
+setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+    // Authentication persistence set to LOCAL successfully
+  })
+  .catch((error) => {
+    console.error('Error setting persistence:', error);
+  });
 
 // Initialize Firebase Authentication and get a reference to the service
 export default auth;
