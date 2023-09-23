@@ -2,9 +2,30 @@
 
 This is a simple to-do list app developed using React Native. The app allows users to create, edit, delete, and mark tasks as complete. It provides filtering and sorting options, user registration and login via Firebase Authentication, and data storage in Cloud Firestore. The app has been designed for both Android and iOS platforms.
 
-## Live Demo
+## Screenshots
 
-Check out the live of the app here: [Live Demo](https:)
+
+<!-- Login Page -->
+<img src="https://github.com/nirojfloyd/ToDoListApp_NirojSedhai/blob/master/assets/screenshots/loginpage.jpg" alt="Login Page" width="300"/>
+
+<!-- Signup Page -->
+<img src="https://github.com/nirojfloyd/ToDoListApp_NirojSedhai/blob/master/assets/screenshots/signuppage.jpg" alt="Signup Page" width="300"/>
+
+<!-- Todo Page 1 -->
+<img src="https://github.com/nirojfloyd/ToDoListApp_NirojSedhai/blob/master/assets/screenshots/todopage1.jpg" alt="Todo Page 1" width="300"/>
+
+<!-- Todo Page 2 -->
+<img src="https://github.com/nirojfloyd/ToDoListApp_NirojSedhai/blob/master/assets/screenshots/todopage2.jpg" alt="Todo Page 2" width="300"/>
+
+<!-- Todo Page 3 -->
+<img src="https://github.com/nirojfloyd/ToDoListApp_NirojSedhai/blob/master/assets/screenshots/todopage3.jpg" alt="Todo Page 3" width="300"/>
+
+<!-- Todo Page 4 -->
+<img src="https://github.com/nirojfloyd/ToDoListApp_NirojSedhai/blob/master/assets/screenshots/todopage4.jpg" alt="Todo Page 4" width="300"/>
+
+![image](https://github.com/nirojfloyd/ToDoListApp_NirojSedhai/assets/65107710/74949475-a3f2-45d7-a830-cd865c9b3b5a)
+
+
 
 ## Table of Contents
 
