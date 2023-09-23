@@ -62,6 +62,7 @@ This is a simple to-do list app developed using React Native. The app allows use
 - Development Tools:
   - Expo CLI
   - Visual Studio Code as IDE
+  - ESLint and Prettier: Code styling and formatting tools.
 <br></br>
 - Version Control
   - Git
