@@ -4,7 +4,7 @@
 // Signup.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import the useNavigation hook
+import { useNavigation } from '@react-navigation/native';
 import { signUp } from '../../context/Auth';
 import logo from '../../../assets/login_image.jpg';
 
@@ -12,7 +12,7 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [successMessage, setSuccessMessage] = useState(null); // State for success message
-  const navigation = useNavigation(); // Use the useNavigation hook
+  const navigation = useNavigation();
 
   const handleSignup = async () => {
     try {
@@ -70,11 +70,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     backgroundColor: '#fff',
-    border: '1px solid #ccc', // Add border style here
-    borderRadius: 10, // Add border radius for rounded corners
+    border: '1px solid #ccc',
+    borderRadius: 10,
   },
   logo: {
-    width: 80, // Adjust the width and height as needed
+    width: 80,
     height: 80,
     marginBottom: 20,
   },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   loginLink: {
-    color: 'blue', // Make the "Login here" text blue
+    color: 'blue',
     textDecorationLine: 'underline',
   },
   button: {

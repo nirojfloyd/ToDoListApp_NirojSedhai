@@ -1,6 +1,6 @@
 // getUserID.js
 
-import { auth } from 'firebase/auth'; // Import the auth module from Firebase
+import { auth } from 'firebase/auth';
 
 // Function to get the user ID
 function getUserID() {
@@ -8,10 +8,10 @@ function getUserID() {
 
   if (user) {
     // User is signed in
-    return user.uid; // Return the user's unique ID
+    return user.uid;
   }
   // No user is signed in
-  return null; // Return null or handle as needed
+  return null;
 }
 
 export default getUserID;

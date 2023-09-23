@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
-// AppContext.js (Create a context for managing user state)
+// AppContext.js (Manages a context for managing user state)
 import React, {
   createContext, useContext, useState, useEffect, useMemo,
 } from 'react';
@@ -13,7 +13,7 @@ export function AppProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Use Firebase's onAuthStateChanged to listen for changes in the user's authentication state
+    // Firebase's onAuthStateChanged to listen for changes in the user's authentication state
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in

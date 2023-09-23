@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { addTask, updateTask, getTasksByUser, deleteTask } from './taskService';
 import { useAppContext } from '../context/AppContext';
@@ -25,12 +25,12 @@ function TodoList() {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const { user, logOut } = useAppContext();
   const navigation = useNavigation();
-  const [filter, setFilter] = useState('all'); // Track filter option (all, active, completed)
-  const [sort, setSort] = useState('default'); // Track sort option (default, alphabetical)
+  const [filter, setFilter] = useState('all'); //filter option are all, active, completed
+  const [sort, setSort] = useState('default'); // sort options are default, alphabetical
   const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
-    // Load tasks associated with the user when the component mounts
+    // Load tasks associated with the user
     if (user) {
       loadTasks(user.uid);
     }
@@ -128,8 +128,8 @@ function TodoList() {
   };
 
   const filterAndSortTasks = () => {
-    console.log('Filter:', filter); // Debugging: Log the current filter
-    console.log('Sort:', sort); // Debugging: Log the current sort
+    console.log('Filter:', filter);
+    console.log('Sort:', sort);
 
     let filteredTasks = [...tasks];
 
@@ -145,7 +145,7 @@ function TodoList() {
       filteredTasks.sort((a, b) => a.title.localeCompare(b.title));
     }
 
-    console.log('Filtered Tasks:', filteredTasks); // Debugging: Log the filtered tasks
+    console.log('Filtered Tasks:', filteredTasks);
 
     setFilteredTasks(filteredTasks);
   };
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   activeFilterButton: {
-    backgroundColor: 'lightgrey', // Change the background color for the active filter
+    backgroundColor: 'lightgrey',
   },
   filterButtonText: {
     fontSize: 16,
@@ -323,13 +323,13 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   activeSortButton: {
-    backgroundColor: 'lightgrey', // Change the background color for the active sort
+    backgroundColor: 'lightgrey',
   },
   sortButtonText: {
     fontSize: 16,
   },
   addButton: {
-    backgroundColor: 'skyblue',
+    backgroundColor: '#007acc',
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 20,

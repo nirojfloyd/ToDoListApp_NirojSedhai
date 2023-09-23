@@ -14,7 +14,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null); // State to store login error
-  const navigation = useNavigation(); // Use the useNavigation hook
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
     try {
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   signupLink: {
-    color: 'blue', // Make the "Signup here" text blue
+    color: 'blue',
     textDecorationLine: 'underline',
   },
   button: {
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   logo: {
-    width: 80, // Adjust the width and height as needed
+    width: 80,
     height: 80,
     marginBottom: 20,
   },
